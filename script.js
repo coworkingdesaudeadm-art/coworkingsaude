@@ -290,6 +290,9 @@
   const isMobileMedia = window.matchMedia('(max-width: 768px)').matches;
   let presentationWarmupDone = false;
   let pausedByModal = [];
+  let stallWatchTimer = null;
+  let stallLastTime = 0;
+  let stallTicks = 0;
 
   function warmupPresentationVideo() {
     if (!presentVideo || presentationWarmupDone) return;
@@ -341,6 +344,46 @@
       if (!videoModal.classList.contains('active')) return;
       presentVideo.play().catch(function () {});
     }
+
+    function startStallWatch() {
+      if (!isMobileMedia || stallWatchTimer || !videoModal.classList.contains('active')) return;
+      stallLastTime = presentVideo.currentTime || 0;
+      stallTicks = 0;
+      stallWatchTimer = setInterval(function () {
+        if (!videoModal.classList.contains('active') || presentVideo.paused || presentVideo.ended) return;
+        const nowTime = presentVideo.currentTime || 0;
+        const frozen = Math.abs(nowTime - stallLastTime) < 0.01;
+        if (frozen && presentVideo.readyState < 3) {
+          stallTicks += 1;
+        } else {
+          stallTicks = 0;
+        }
+
+        if (stallTicks >= 2) {
+          const targetTime = nowTime + 0.05;
+          if (!Number.isNaN(presentVideo.duration) && Number.isFinite(presentVideo.duration)) {
+            presentVideo.currentTime = Math.min(targetTime, Math.max(0, presentVideo.duration - 0.1));
+          } else {
+            presentVideo.currentTime = targetTime;
+          }
+          presentVideo.play().catch(function () {});
+          stallTicks = 0;
+        }
+
+        stallLastTime = presentVideo.currentTime || nowTime;
+      }, 1200);
+    }
+
+    function stopStallWatch() {
+      if (!stallWatchTimer) return;
+      clearInterval(stallWatchTimer);
+      stallWatchTimer = null;
+      stallTicks = 0;
+    }
+
+    presentVideo.addEventListener('play', startStallWatch);
+    presentVideo.addEventListener('pause', stopStallWatch);
+    presentVideo.addEventListener('ended', stopStallWatch);
     presentVideo.addEventListener('stalled', recoverPlayback);
     presentVideo.addEventListener('waiting', recoverPlayback);
   }
@@ -370,6 +413,10 @@
     if (presentVideo) {
       presentVideo.pause();
       presentVideo.currentTime = 0;
+      if (stallWatchTimer) {
+        clearInterval(stallWatchTimer);
+        stallWatchTimer = null;
+      }
     }
     resumeCompetingVideos();
   }
