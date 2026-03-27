@@ -312,6 +312,23 @@
     openVideoBtn.addEventListener('focus', warmupPresentationVideo, { passive: true });
   }
 
+  if (presentVideo) {
+    const autoWarmup = function () {
+      if (document.visibilityState !== 'visible') return;
+      warmupPresentationVideo();
+    };
+
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(autoWarmup, { timeout: 2800 });
+    } else {
+      setTimeout(autoWarmup, 1800);
+    }
+
+    window.addEventListener('load', function () {
+      setTimeout(autoWarmup, 900);
+    }, { once: true });
+  }
+
   function pauseCompetingVideos() {
     pausedByModal = [];
     competingVideos.forEach(function (video) {
