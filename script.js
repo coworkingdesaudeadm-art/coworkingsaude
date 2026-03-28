@@ -77,8 +77,91 @@
   /* ---- Parallax sutil no hero ---- */
   const heroContent = document.querySelector('.hero-content');
   const heroOverlay = document.querySelector('.hero-overlay');
+  const heroVideo = document.querySelector('.hero-video');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isMobileViewport = window.matchMedia('(max-width: 768px)').matches;
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+
+  function hydrateVideoSource(video) {
+    if (!video || video.dataset.loaded === 'true') {
+      return;
+    }
+
+    const source = video.querySelector('source[data-src]');
+    const videoSrc = video.dataset.src;
+
+    if (source && !source.src) {
+      source.src = source.dataset.src;
+    }
+
+    if (videoSrc && !video.src) {
+      video.src = videoSrc;
+    }
+
+    video.load();
+    video.dataset.loaded = 'true';
+  }
+
+  function playVideoSafely(video) {
+    if (!video) {
+      return;
+    }
+
+    const playPromise = video.play();
+    if (playPromise && typeof playPromise.catch === 'function') {
+      playPromise.catch(function () {});
+    }
+  }
+
+  function setupHeroVideo() {
+    if (!heroVideo || reduceMotion) {
+      return;
+    }
+
+    const shouldDeferHeavyVideo = Boolean(
+      connection && (connection.saveData || /2g|3g/.test(connection.effectiveType || ''))
+    );
+
+    function markHeroReady() {
+      heroVideo.classList.add('is-ready');
+      playVideoSafely(heroVideo);
+    }
+
+    function loadHeroVideo() {
+      if (heroVideo.dataset.loaded === 'true') {
+        markHeroReady();
+        return;
+      }
+
+      heroVideo.addEventListener('canplay', markHeroReady, { once: true });
+      hydrateVideoSource(heroVideo);
+
+      if (heroVideo.readyState >= 3) {
+        markHeroReady();
+      }
+    }
+
+    if (shouldDeferHeavyVideo) {
+      ['pointerdown', 'keydown', 'touchstart'].forEach(function (eventName) {
+        window.addEventListener(eventName, loadHeroVideo, { once: true, passive: true });
+      });
+      return;
+    }
+
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(loadHeroVideo, { timeout: 1800 });
+    } else {
+      window.setTimeout(loadHeroVideo, 900);
+    }
+
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) {
+        heroVideo.pause();
+      } else if (heroVideo.dataset.loaded === 'true') {
+        playVideoSafely(heroVideo);
+      }
+    });
+  }
 
   function heroParallax() {
     const scrollY = window.scrollY;
@@ -96,6 +179,8 @@
     window.addEventListener('scroll', heroParallax, { passive: true });
   }
 
+  setupHeroVideo();
+
   /* ---- Lazy autoplay para vídeos secundários ---- */
   const lazyAutoplayVideos = document.querySelectorAll('video[data-autoplay-lazy]');
 
@@ -103,13 +188,16 @@
     const videoObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         const video = entry.target;
+        if (entry.isIntersecting) {
+          hydrateVideoSource(video);
+        }
         if (entry.isIntersecting && entry.intersectionRatio > 0.55) {
-          video.play().catch(function () {});
+          playVideoSafely(video);
         } else {
           video.pause();
         }
       });
-    }, { threshold: [0, 0.55, 1] });
+    }, { rootMargin: '160px 0px', threshold: [0, 0.55, 1] });
 
     lazyAutoplayVideos.forEach(function (video) {
       video.muted = true;
@@ -287,11 +375,10 @@
   const presentVideo    = document.getElementById('presentationVideo');
   const openVideoBtn    = document.getElementById('openVideoModal');
   const competingVideos = document.querySelectorAll('.hero-video, video[data-autoplay-lazy]');
-  const isMobileMedia = window.matchMedia('(max-width: 768px)').matches;
   let pausedByModal = [];
 
   if (presentVideo) {
-    presentVideo.preload = 'auto';
+    presentVideo.preload = 'metadata';
   }
 
   function pauseCompetingVideos() {
@@ -322,8 +409,9 @@
     document.body.style.overflow = 'hidden';
     pauseCompetingVideos();
     if (presentVideo) {
+      hydrateVideoSource(presentVideo);
       presentVideo.currentTime = 0;
-      presentVideo.play().catch(function () {});
+      playVideoSafely(presentVideo);
     }
   }
 
