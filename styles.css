@@ -37,6 +37,15 @@ img { max-width: 100%; display: block; }
 a  { text-decoration: none; color: inherit; }
 ul { list-style: none; }
 
+.icon-svg {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  vertical-align: -0.125em;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
 .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
 .section-padding { padding: 100px 0; }
 .bg-light    { background: var(--secondary); }
@@ -167,7 +176,7 @@ ul { list-style: none; }
   background: rgba(255,255,255,.28);
   transform: scale(1.12);
 }
-.btn-play-icon i { font-size: .75rem; margin-left: 2px; }
+.btn-play-icon .icon-svg { width: .75rem; height: .75rem; margin-left: 2px; }
 
 /* Outline — frosted glass (hero/dark bg) */
 .btn-glass-outline {
@@ -396,11 +405,29 @@ ul { list-style: none; }
    HERO
    ============================================= */
 .hero {
-  position: relative;
+  position: fixed;
+  inset: 0;
+  height: 100dvh;
   min-height: 100vh;
   display: flex;
   align-items: center;
   overflow: hidden;
+  z-index: 0;
+}
+
+.hero-spacer {
+  height: 100vh;
+  pointer-events: none;
+}
+
+.page-content {
+  position: relative;
+  z-index: 2;
+  background: var(--white);
+  border-radius: 24px 24px 0 0;
+  margin-top: -24px;
+  box-shadow: 0 -18px 45px rgba(0,0,0,.18);
+  overflow: clip;
 }
 
 .hero-video {
@@ -532,7 +559,7 @@ ul { list-style: none; }
   text-transform: uppercase;
   animation: bounceDown 2.2s infinite;
 }
-.hero-scroll-indicator i { font-size: 1rem; }
+.hero-scroll-indicator .icon-svg { width: 1rem; height: 1rem; }
 
 @keyframes bounceDown {
   0%, 100% { transform: translateX(-50%) translateY(0); }
@@ -581,9 +608,10 @@ ul { list-style: none; }
   gap: .8rem;
   box-shadow: var(--shadow);
 }
-.about-badge-float i {
+.about-badge-float .icon-svg {
   color: #FFB74D;
-  font-size: 1.6rem;
+  width: 1.6rem;
+  height: 1.6rem;
 }
 .about-badge-float div { display: flex; flex-direction: column; }
 .about-badge-float strong { font-size: .9rem; font-weight: 700; color: var(--text); }
@@ -607,7 +635,7 @@ ul { list-style: none; }
   font-weight: 500;
   font-size: .95rem;
 }
-.about-highlights li i { color: var(--accent); font-size: .9rem; }
+.about-highlights li .icon-svg { color: var(--accent); width: .9rem; height: .9rem; }
 
 /* =============================================
    BENEFITS
@@ -642,7 +670,7 @@ ul { list-style: none; }
   justify-content: center;
   margin: 0 auto 1.4rem;
 }
-.benefit-icon i { color: var(--white); font-size: 1.6rem; }
+.benefit-icon .icon-svg { color: var(--white); width: 1.6rem; height: 1.6rem; }
 
 .benefit-card h3 {
   font-size: 1.15rem;
@@ -677,9 +705,10 @@ ul { list-style: none; }
   box-shadow: var(--shadow);
   transform: translateX(4px);
 }
-.structure-item i {
+.structure-item .icon-svg {
   color: var(--primary);
-  font-size: 1.3rem;
+  width: 1.3rem;
+  height: 1.3rem;
   flex-shrink: 0;
   width: 28px;
   text-align: center;
@@ -730,7 +759,7 @@ ul { list-style: none; }
   opacity: 0;
   transition: opacity var(--transition);
 }
-.gallery-overlay i { color: var(--white); font-size: 1.8rem; }
+.gallery-overlay .icon-svg { color: var(--white); width: 1.8rem; height: 1.8rem; }
 .gallery-item:hover .gallery-overlay { opacity: 1; }
 
 /* Lightbox */
@@ -792,9 +821,10 @@ ul { list-style: none; }
   padding: 1.4rem 1.6rem;
   position: relative;
 }
-.founder-quote i {
+.founder-quote .icon-svg {
   color: var(--primary);
-  font-size: 1.8rem;
+  width: 1.8rem;
+  height: 1.8rem;
   margin-bottom: .5rem;
   display: block;
 }
@@ -839,7 +869,7 @@ ul { list-style: none; }
   font-weight: 600;
   font-size: .95rem;
 }
-.credential i { color: var(--primary); font-size: 1.1rem; }
+.credential .icon-svg { color: var(--primary); width: 1.1rem; height: 1.1rem; }
 
 /* =============================================
    DIFFERENTIALS
@@ -869,7 +899,7 @@ ul { list-style: none; }
   background: rgba(255,255,255,.2);
   transform: translateY(-3px);
 }
-.diff-item i { font-size: 1.3rem; color: rgba(255,255,255,.8); flex-shrink: 0; }
+.diff-item .icon-svg { width: 1.3rem; height: 1.3rem; color: rgba(255,255,255,.8); flex-shrink: 0; }
 
 /* =============================================
    CTA BANNER
@@ -964,9 +994,10 @@ ul { list-style: none; }
   color: var(--text-muted);
   line-height: 1.5;
 }
-.map-address-card ul li i {
+.map-address-card ul li .icon-svg {
   color: var(--primary);
-  font-size: 1rem;
+  width: 1rem;
+  height: 1rem;
   flex-shrink: 0;
   margin-top: 2px;
   width: 18px;
@@ -1009,7 +1040,7 @@ ul { list-style: none; }
   color: rgba(255,255,255,.45);
   line-height: 1.4;
 }
-.footer-brand-company i { color: var(--primary-lt); flex-shrink: 0; margin-top: 3px; font-size: .8rem; }
+.footer-brand-company .icon-svg { color: var(--primary-lt); flex-shrink: 0; margin-top: 3px; width: .8rem; height: .8rem; }
 
 .footer-links h4, .footer-contact h4 {
   font-size: .85rem;
@@ -1032,7 +1063,7 @@ ul { list-style: none; }
   color: rgba(255,255,255,.7);
   line-height: 1.45;
 }
-.footer-contact ul li > i {
+.footer-contact ul li > .icon-svg {
   color: var(--primary-lt);
   flex-shrink: 0;
   width: 16px;
@@ -1161,6 +1192,10 @@ ul { list-style: none; }
 
 @media (max-width: 768px) {
   .section-padding { padding: 70px 0; }
+  .page-content {
+    border-radius: 18px 18px 0 0;
+    margin-top: -18px;
+  }
 
   .video-modal {
     padding: 1rem;
@@ -1261,6 +1296,10 @@ ul { list-style: none; }
 }
 
 @media (max-width: 480px) {
+  .page-content {
+    border-radius: 14px 14px 0 0;
+    margin-top: -14px;
+  }
   .nav-logo img { height: 56px; }
   .navbar.scrolled .nav-logo img { height: 52px; }
   .hero-stats .stat-divider { display: none; }

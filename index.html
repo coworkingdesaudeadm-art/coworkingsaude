@@ -46,8 +46,82 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 
-  <!-- Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
+  <style>
+    :root {
+      --primary: #2E7D7D;
+      --text: #1a1a2e;
+      --white: #ffffff;
+      --font: 'Poppins', sans-serif;
+      --transition: .35s cubic-bezier(.4,0,.2,1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); color: var(--text); background: var(--white); overflow-x: hidden; line-height: 1.6; }
+    img { max-width: 100%; display: block; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 1.1rem 0;
+      transition: background var(--transition), box-shadow var(--transition), padding var(--transition);
+    }
+    .navbar.scrolled {
+      background: rgba(255,255,255,.97);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 2px 24px rgba(0,0,0,.1);
+      padding: .7rem 0;
+    }
+    .nav-container { display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo img { width: min(220px, 45vw); height: auto; }
+    .nav-links { display: flex; gap: 1.1rem; list-style: none; }
+    .hero {
+      position: fixed;
+      inset: 0;
+      height: 100dvh;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      color: #fff;
+      background: #0f3d3d;
+      z-index: 0;
+    }
+    .hero-video, .hero-overlay {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .hero-video { object-fit: cover; }
+    .hero-overlay { background: linear-gradient(135deg, rgba(9, 34, 34, .7), rgba(23, 94, 94, .65)); }
+    .hero-content { position: relative; z-index: 1; text-align: center; padding: 8rem 1rem 2rem; max-width: 900px; }
+    .hero-spacer { height: 100vh; }
+    .page-content {
+      position: relative;
+      z-index: 2;
+      background: #fff;
+      border-radius: 24px 24px 0 0;
+      margin-top: -24px;
+      box-shadow: 0 -18px 45px rgba(0, 0, 0, .18);
+      overflow: clip;
+    }
+    .hero-title { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.15; margin-bottom: .8rem; }
+    .hero-subtitle { font-size: clamp(1rem, 2.2vw, 1.2rem); max-width: 720px; margin: 0 auto; }
+    .nav-toggle { display: none; }
+    @media (max-width: 960px) {
+      .nav-toggle { display: inline-flex; }
+      .nav-links { display: none; }
+      .nav-links.open { display: flex; }
+      .hero-content { padding-top: 7rem; }
+      .page-content {
+        border-radius: 18px 18px 0 0;
+        margin-top: -18px;
+      }
+    }
+  </style>
 
   <script type="application/ld+json">
     {
@@ -136,7 +210,9 @@
     }
   </script>
 
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="preload" href="styles.css" as="style" />
+  <link rel="stylesheet" href="styles.css" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="styles.css" /></noscript>
 </head>
 <body>
 
@@ -144,7 +220,13 @@
   <nav class="navbar" id="navbar">
     <div class="nav-container">
       <a href="#home" class="nav-logo">
-        <img src="assets/images/logo.png" alt="Coworking Saúde Therapi" width="318" height="116" fetchpriority="high" />
+        <picture>
+          <source
+            srcset="assets/images/logo-400.webp 400w, assets/images/logo-800.webp 800w"
+            sizes="(max-width: 600px) 160px, 220px"
+            type="image/webp" />
+          <img src="assets/images/logo.png" alt="Coworking Saúde Therapi" width="700" height="273" fetchpriority="high" />
+        </picture>
       </a>
       <ul class="nav-links" id="navLinks">
         <li><a href="#sobre">Sobre</a></li>
@@ -189,16 +271,32 @@
     </div>
   </section>
 
+  <div class="hero-spacer" aria-hidden="true"></div>
+
+  <main class="page-content">
+
   <!-- ===== SOBRE ===== -->
   <section class="about section-padding" id="sobre">
     <div class="container">
       <div class="about-grid">
         <div class="about-image-wrap" data-scroll-reveal="slide-left">
           <div class="about-image-main">
-            <img src="assets/images/espaco1.jpeg" alt="Interior do Coworking Saúde Therapi" loading="lazy" />
+            <picture>
+              <source
+                srcset="assets/images/espaco1-400.webp 400w, assets/images/espaco1-800.webp 800w"
+                sizes="(max-width: 600px) 260px, 640px"
+                type="image/webp" />
+              <img src="assets/images/espaco1.jpeg" alt="Interior do Coworking Saúde Therapi" loading="lazy" width="1280" height="722" />
+            </picture>
           </div>
           <div class="about-image-secondary">
-            <img src="assets/images/espaco2.jpeg" alt="Consultório Saúde Therapi" loading="lazy" />
+            <picture>
+              <source
+                srcset="assets/images/espaco2-400.webp 400w, assets/images/espaco2-800.webp 800w"
+                sizes="(max-width: 600px) 269px, 800px"
+                type="image/webp" />
+              <img src="assets/images/espaco2.jpeg" alt="Consultório Saúde Therapi" loading="lazy" width="1280" height="722" />
+            </picture>
           </div>
           <div class="about-badge-float">
             <i class="fa-solid fa-star"></i>
@@ -304,56 +402,122 @@
       </div>
       <div class="gallery-grid" data-scroll-reveal>
         <!-- 1. Vídeo do drone -->
-        <div class="gallery-item gallery-item--large gallery-item--video" data-video="assets/galeria de fotos/videodrone.mp4">
-          <video muted loop playsinline preload="none" poster="assets/galeria de fotos/fachada da frente do Coworking.jpeg" data-autoplay-lazy data-src="assets/galeria de fotos/videodrone.mp4"></video>
+        <div class="gallery-item gallery-item--large gallery-item--video" data-video="assets/galeria%20de%20fotos/videodrone.mp4">
+          <video muted loop playsinline preload="none" poster="assets/galeria%20de%20fotos/fachada%20da%20frente%20do%20Coworking.jpeg" data-autoplay-lazy data-src="assets/galeria%20de%20fotos/videodrone.mp4"></video>
           <div class="gallery-overlay"><i class="fa-solid fa-play"></i></div>
         </div>
         <!-- 2. Fachada da frente -->
         <div class="gallery-item">
-          <img src="assets/galeria de fotos/fachada da frente do Coworking.jpeg" alt="Fachada do Coworking" loading="lazy" />
+          <picture>
+            <source
+              srcset="assets/galeria%20de%20fotos/fachada%20da%20frente%20do%20Coworking-400.webp 400w, assets/galeria%20de%20fotos/fachada%20da%20frente%20do%20Coworking-800.webp 800w"
+              sizes="(max-width: 600px) 92vw, (max-width: 1024px) 45vw, 360px"
+              type="image/webp" />
+            <img src="assets/galeria%20de%20fotos/fachada%20da%20frente%20do%20Coworking.jpeg" alt="Fachada do Coworking" loading="lazy" width="1079" height="1078" />
+          </picture>
           <div class="gallery-overlay"><i class="fa-solid fa-expand"></i></div>
         </div>
         <!-- 3. Recepção -->
         <div class="gallery-item">
-          <img src="assets/galeria de fotos/recepcao.jpeg" alt="Recepção" loading="lazy" />
+          <picture>
+            <source
+              srcset="assets/galeria%20de%20fotos/recepcao-400.webp 400w, assets/galeria%20de%20fotos/recepcao-800.webp 800w"
+              sizes="(max-width: 600px) 92vw, (max-width: 1024px) 45vw, 360px"
+              type="image/webp" />
+            <img src="assets/galeria%20de%20fotos/recepcao.jpeg" alt="Recepção" loading="lazy" width="1280" height="722" />
+          </picture>
           <div class="gallery-overlay"><i class="fa-solid fa-expand"></i></div>
         </div>
         <!-- 4. Sala de espera -->
         <div class="gallery-item">
-          <img src="assets/galeria de fotos/sala de espera.jpeg" alt="Sala de Espera" loading="lazy" />
+          <picture>
+            <source
+              srcset="assets/galeria%20de%20fotos/sala%20de%20espera-400.webp 400w, assets/galeria%20de%20fotos/sala%20de%20espera-800.webp 800w"
+              sizes="(max-width: 600px) 92vw, (max-width: 1024px) 45vw, 360px"
+              type="image/webp" />
+            <img src="assets/galeria%20de%20fotos/sala%20de%20espera.jpeg" alt="Sala de Espera" loading="lazy" width="960" height="1280" />
+          </picture>
           <div class="gallery-overlay"><i class="fa-solid fa-expand"></i></div>
         </div>
         <!-- 5. Consultórios -->
         <div class="gallery-item">
-          <img src="assets/galeria de fotos/consultorios (2).jpeg" alt="Consultório" loading="lazy" />
+          <picture>
+            <source
+              srcset="assets/galeria%20de%20fotos/consultorios%20%282%29-400.webp 400w, assets/galeria%20de%20fotos/consultorios%20%282%29-800.webp 800w"
+              sizes="(max-width: 600px) 92vw, (max-width: 1024px) 45vw, 360px"
+              type="image/webp" />
+            <img src="assets/galeria%20de%20fotos/consultorios%20%282%29.jpeg" alt="Consultório" loading="lazy" width="1280" height="722" />
+          </picture>
           <div class="gallery-overlay"><i class="fa-solid fa-expand"></i></div>
         </div>
         <div class="gallery-item">
-          <img src="assets/galeria de fotos/consultorios (3).jpeg" alt="Consultório" loading="lazy" />
+          <picture>
+            <source
+              srcset="assets/galeria%20de%20fotos/consultorios%20%283%29-400.webp 400w, assets/galeria%20de%20fotos/consultorios%20%283%29-800.webp 800w"
+              sizes="(max-width: 600px) 92vw, (max-width: 1024px) 45vw, 360px"
+              type="image/webp" />
+            <img src="assets/galeria%20de%20fotos/consultorios%20%283%29.jpeg" alt="Consultório" loading="lazy" width="1280" height="722" />
+          </picture>
           <div class="gallery-overlay"><i class="fa-solid fa-expand"></i></div>
         </div>
         <div class="gallery-item">
-          <img src="assets/galeria de fotos/consultorios (4).jpeg" alt="Consultório" loading="lazy" />
+          <picture>
+            <source
+              srcset="assets/galeria%20de%20fotos/consultorios%20%284%29-400.webp 400w, assets/galeria%20de%20fotos/consultorios%20%284%29-800.webp 800w"
+              sizes="(max-width: 600px) 92vw, (max-width: 1024px) 45vw, 360px"
+              type="image/webp" />
+            <img src="assets/galeria%20de%20fotos/consultorios%20%284%29.jpeg" alt="Consultório" loading="lazy" width="1280" height="722" />
+          </picture>
           <div class="gallery-overlay"><i class="fa-solid fa-expand"></i></div>
         </div>
         <div class="gallery-item">
-          <img src="assets/galeria de fotos/consultorios (5).jpeg" alt="Consultório" loading="lazy" />
+          <picture>
+            <source
+              srcset="assets/galeria%20de%20fotos/consultorios%20%285%29-400.webp 400w, assets/galeria%20de%20fotos/consultorios%20%285%29-800.webp 800w"
+              sizes="(max-width: 600px) 92vw, (max-width: 1024px) 45vw, 360px"
+              type="image/webp" />
+            <img src="assets/galeria%20de%20fotos/consultorios%20%285%29.jpeg" alt="Consultório" loading="lazy" width="721" height="986" />
+          </picture>
           <div class="gallery-overlay"><i class="fa-solid fa-expand"></i></div>
         </div>
         <div class="gallery-item">
-          <img src="assets/galeria de fotos/consultorios (6).jpeg" alt="Consultório" loading="lazy" />
+          <picture>
+            <source
+              srcset="assets/galeria%20de%20fotos/consultorios%20%286%29-400.webp 400w, assets/galeria%20de%20fotos/consultorios%20%286%29-800.webp 800w"
+              sizes="(max-width: 600px) 92vw, (max-width: 1024px) 45vw, 360px"
+              type="image/webp" />
+            <img src="assets/galeria%20de%20fotos/consultorios%20%286%29.jpeg" alt="Consultório" loading="lazy" width="960" height="1280" />
+          </picture>
           <div class="gallery-overlay"><i class="fa-solid fa-expand"></i></div>
         </div>
         <div class="gallery-item">
-          <img src="assets/galeria de fotos/consultorios (7).jpeg" alt="Consultório" loading="lazy" />
+          <picture>
+            <source
+              srcset="assets/galeria%20de%20fotos/consultorios%20%287%29-400.webp 400w, assets/galeria%20de%20fotos/consultorios%20%287%29-800.webp 800w"
+              sizes="(max-width: 600px) 92vw, (max-width: 1024px) 45vw, 360px"
+              type="image/webp" />
+            <img src="assets/galeria%20de%20fotos/consultorios%20%287%29.jpeg" alt="Consultório" loading="lazy" width="1280" height="722" />
+          </picture>
           <div class="gallery-overlay"><i class="fa-solid fa-expand"></i></div>
         </div>
         <div class="gallery-item">
-          <img src="assets/galeria de fotos/consultorios (8).jpeg" alt="Consultório" loading="lazy" />
+          <picture>
+            <source
+              srcset="assets/galeria%20de%20fotos/consultorios%20%288%29-400.webp 400w, assets/galeria%20de%20fotos/consultorios%20%288%29-800.webp 800w"
+              sizes="(max-width: 600px) 92vw, (max-width: 1024px) 45vw, 360px"
+              type="image/webp" />
+            <img src="assets/galeria%20de%20fotos/consultorios%20%288%29.jpeg" alt="Consultório" loading="lazy" width="1280" height="720" />
+          </picture>
           <div class="gallery-overlay"><i class="fa-solid fa-expand"></i></div>
         </div>
         <div class="gallery-item">
-          <img src="assets/galeria de fotos/consultorios (9).jpeg" alt="Consultório" loading="lazy" />
+          <picture>
+            <source
+              srcset="assets/galeria%20de%20fotos/consultorios%20%289%29-400.webp 400w, assets/galeria%20de%20fotos/consultorios%20%289%29-800.webp 800w"
+              sizes="(max-width: 600px) 92vw, (max-width: 1024px) 45vw, 360px"
+              type="image/webp" />
+            <img src="assets/galeria%20de%20fotos/consultorios%20%289%29.jpeg" alt="Consultório" loading="lazy" width="1280" height="960" />
+          </picture>
           <div class="gallery-overlay"><i class="fa-solid fa-expand"></i></div>
         </div>
       </div>
@@ -558,6 +722,8 @@
       </div>
     </div>
   </footer>
+
+  </main>
 
   <!-- ===== WhatsApp Float Button ===== -->
   <a href="https://wa.me/5586999449402" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Contato WhatsApp">
