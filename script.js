@@ -204,6 +204,7 @@
       }
 
       heroVideo.addEventListener('canplay', markHeroReady, { once: true });
+      heroVideo.addEventListener('loadeddata', markHeroReady, { once: true });
       hydrateVideoSource(heroVideo);
 
       if (heroVideo.readyState >= 3) {
@@ -215,6 +216,8 @@
       ['pointerdown', 'keydown', 'touchstart'].forEach(function (eventName) {
         window.addEventListener(eventName, loadHeroVideo, { once: true, passive: true });
       });
+      // Fallback: mesmo em rede lenta, tenta carregar sem depender de interação.
+      window.setTimeout(loadHeroVideo, 2400);
       return;
     }
 
