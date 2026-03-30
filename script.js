@@ -157,12 +157,14 @@
       return;
     }
 
-    const source = video.querySelector('source[data-src]');
+    const sources = video.querySelectorAll('source[data-src]');
     const videoSrc = video.dataset.src;
 
-    if (source && !source.src) {
-      source.src = source.dataset.src;
-    }
+    sources.forEach(function (source) {
+      if (!source.src) {
+        source.src = source.dataset.src;
+      }
+    });
 
     if (videoSrc && !video.src) {
       video.src = videoSrc;
