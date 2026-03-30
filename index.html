@@ -74,7 +74,7 @@
       padding: .7rem 0;
     }
     .nav-container { display: flex; align-items: center; justify-content: space-between; }
-    .nav-logo img { width: min(220px, 45vw); height: auto; }
+    .nav-logo img { width: min(236px, 52vw); height: auto; }
     .nav-links { display: flex; gap: 1.1rem; list-style: none; }
     .hero {
       position: relative;
@@ -101,6 +101,8 @@
     .hero-subtitle { font-size: clamp(1rem, 2.2vw, 1.2rem); max-width: 720px; margin: 0 auto; }
     .nav-toggle { display: none; }
     @media (max-width: 960px) {
+      .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 9900; }
+      .nav-logo img { width: min(248px, 58vw); }
       .nav-toggle { display: inline-flex; }
       .nav-links { display: none; }
       .nav-links.open { display: flex; }
