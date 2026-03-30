@@ -190,8 +190,10 @@
       return;
     }
 
+    const hasEagerSource = Boolean(heroVideo.getAttribute('src') || heroVideo.querySelector('source[src]'));
+
     const shouldDeferHeavyVideo = Boolean(
-      connection && (connection.saveData || /2g|3g/.test(connection.effectiveType || ''))
+      !hasEagerSource && connection && (connection.saveData || /2g|3g/.test(connection.effectiveType || ''))
     );
 
     function markHeroReady() {
@@ -210,6 +212,14 @@
       hydrateVideoSource(heroVideo);
 
       if (heroVideo.readyState >= 3) {
+        markHeroReady();
+      }
+    }
+
+    if (hasEagerSource) {
+      heroVideo.dataset.loaded = 'true';
+      heroVideo.addEventListener('loadeddata', markHeroReady, { once: true });
+      if (heroVideo.readyState >= 2) {
         markHeroReady();
       }
     }
